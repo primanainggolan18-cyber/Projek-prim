@@ -787,7 +787,7 @@ export default function LayananPage() {
 
           {/* Form Fields Info */}
           {detailLayanan?.fields && detailLayanan.fields.length > 0 && (
-            <Card variant="outlined" sx={{ borderRadius: 2 }}>
+            <Card variant="outlined" sx={{ borderRadius: 2, mb: 3 }}>
               <Box sx={{ bgcolor: 'secondary.main', color: 'white', p: 2, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Assignment />
@@ -812,6 +812,58 @@ export default function LayananPage() {
                 </Grid>
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                   * Field wajib diisi
+                </Typography>
+              </Box>
+            </Card>
+          )}
+
+          {/* Template Surat Preview */}
+          {detailLayanan?.template_surat && detailLayanan.template_surat.length > 0 && (
+            <Card sx={{ borderRadius: 2, border: 2, borderColor: 'primary.light' }}>
+              <Box sx={{ bgcolor: 'primary.light', color: 'white', p: 2, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Description />
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    Preview Surat yang Akan Diterima
+                  </Typography>
+                </Box>
+              </Box>
+              <Box sx={{ p: 2 }}>
+                <Alert severity="info" sx={{ mb: 2, borderRadius: 2 }} icon={<Info />}>
+                  <Typography variant="body2">
+                    Berikut adalah contoh format surat yang akan Anda terima setelah pengajuan disetujui.
+                    Data Anda akan menggantikan placeholder yang ada.
+                  </Typography>
+                </Alert>
+                <Paper sx={{ p: 3, boxShadow: 3, bgcolor: 'grey.50' }}>
+                  <Typography
+                    variant="body2"
+                    component="pre"
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: 'monospace',
+                      fontSize: '0.8rem',
+                      lineHeight: 1.6,
+                      m: 0
+                    }}
+                  >
+                    {detailLayanan.template_surat
+                      .replace('[nama_lengkap]', 'NAMA ANDA')
+                      .replace('[nik]', 'NIK ANDA')
+                      .replace('[alamat]', 'ALAMAT ANDA')
+                      .replace('[nomor_hp]', 'NOMOR HP')
+                      .replace('[email]', 'EMAIL')
+                      .replace('[NAMA_INSTANSI]', 'Kelurahan Anda')
+                      .replace('[KECAMATAN]', 'Kecamatan')
+                      .replace('[KOTA]', 'Kota')
+                      .replace('[NAMA_LURAH]', 'Nama Lurah')
+                      .replace('[NIP_LURAH]', 'NIP Lurah')
+                      .replace('[nomor_surat]', 'XXX/KEL/.../2026')
+                      .replace('[tanggal_surat]', 'TANGGAL SURAT')}
+                  </Typography>
+                </Paper>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
+                  * Data asli Anda akan menggantikan placeholder saat surat dibuat
                 </Typography>
               </Box>
             </Card>

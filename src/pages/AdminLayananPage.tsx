@@ -449,55 +449,317 @@ export default function AdminLayananPage() {
           </TabPanel>
 
           <TabPanel value={tabIndex} index={3}>
-            <Typography variant="subtitle2" gutterBottom>
-              Template Surat (gunakan [nama_field] untuk placeholder data warga)
-            </Typography>
-            <TextField fullWidth multiline rows={12} margin="normal"
-              value={editing.template_surat || ''}
-              onChange={e => setEditing(p => ({ ...p, template_surat: e.target.value }))}
-              placeholder={`Yang bertanda tangan di bawah ini, Lurah Kelurahan [NAMA_INSTANSI], dengan ini menerangkan bahwa:
-
-Nama : [nama_lengkap]
-NIK : [nik]
-Alamat : [alamat]
-
-Adalah benar warga Kelurahan [NAMA_INSTANSI].
-
-Demikian surat ini dibuat.`}
-            />
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-              <Typography variant="caption" fontWeight={600} display="block" gutterBottom>
-                Placeholder Tersedia:
+            {/* Template Info */}
+            <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }} icon={<Info />}>
+              <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+                Template Surat Otomatis
               </Typography>
-              <Grid container spacing={1}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="caption" color="text.secondary" component="div">
-                    Data Warga:
-                  </Typography>
-                  <List dense sx={{ py: 0 }}>
-                    <ListItem sx={{ py: 0.25, px: 0 }}><Typography variant="caption">[nama_lengkap], [nik], [alamat]</Typography></ListItem>
-                    <ListItem sx={{ py: 0.25, px: 0 }}><Typography variant="caption">[nomor_hp], [email]</Typography></ListItem>
-                  </List>
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="caption" color="text.secondary" component="div">
-                    Data Instansi:
-                  </Typography>
-                  <List dense sx={{ py: 0 }}>
-                    <ListItem sx={{ py: 0.25, px: 0 }}><Typography variant="caption">[NAMA_INSTANSI], [KECAMATAN], [KOTA]</Typography></ListItem>
-                    <ListItem sx={{ py: 0.25, px: 0 }}><Typography variant="caption">[NAMA_LURAH], [NIP_LURAH]</Typography></ListItem>
-                  </List>
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="caption" color="text.secondary" component="div">
-                    Surat:
-                  </Typography>
-                  <List dense sx={{ py: 0 }}>
-                    <ListItem sx={{ py: 0.25, px: 0 }}><Typography variant="caption">[nomor_surat], [tanggal_surat]</Typography></ListItem>
-                  </List>
-                </Grid>
+              <Typography variant="body2">
+                Template ini akan digunakan untuk membuat surat otomatis saat pengajuan disetujui.
+                Sistem akan mengganti placeholder dengan data pemohon.
+              </Typography>
+            </Alert>
+
+            {/* Sample Templates */}
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              Template Contoh (Klik untuk gunakan):
+            </Typography>
+            <Grid container spacing={1} sx={{ mb: 3 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <Chip
+                  label="Surat Keterangan Domisili"
+                  onClick={() => setEditing(p => ({ ...p, template_surat: `Yang bertanda tangan di bawah ini, Lurah [NAMA_INSTANSI] dengan ini menerangkan bahwa:
+
+Nama          : [nama_lengkap]
+NIK           : [nik]
+Alamat        : [alamat]
+No. HP        : [nomor_hp]
+
+Adalah benar warga yang berdomisili di wilayah Kelurahan [NAMA_INSTANSI], Kecamatan [KECAMATAN], [KOTA].
+
+Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.
+
+                                            [NAMA_INSTANSI], [tanggal_surat]
+
+                                            Lurah [NAMA_INSTANSI]
+
+                                            [NAMA_LURAH]
+                                            NIP. [NIP_LURAH]` }))}
+                  color="primary"
+                  variant="outlined"
+                  clickable
+                />
               </Grid>
-            </Box>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <Chip
+                  label="Surat Keterangan Tidak Mampu"
+                  onClick={() => setEditing(p => ({ ...p, template_surat: `Yang bertanda tangan di bawah ini, Lurah [NAMA_INSTANSI] dengan ini menerangkan bahwa:
+
+Nama          : [nama_lengkap]
+NIK           : [nik]
+Tempat/Tgl Lahir :
+Jenis Kelamin :
+Alamat        : [alamat]
+
+Adalah benar warga Kelurahan [NAMA_INSTANSI] yang keadaan ekonominya TIDAK MAMPU.
+
+Surat keterangan ini dibuat untuk keperluan: [keperluan]
+
+Demikian surat ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
+
+                                            [NAMA_INSTANSI], [tanggal_surat]
+
+                                            Lurah [NAMA_INSTANSI]
+
+                                            [NAMA_LURAH]
+                                            NIP. [NIP_LURAH]` }))}
+                  color="secondary"
+                  variant="outlined"
+                  clickable
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <Chip
+                  label="Surat Pengantar SKCK"
+                  onClick={() => setEditing(p => ({ ...p, template_surat: `SURAT PENGANTAR
+PENGAJUAN SKCK
+
+Nomor      : [nomor_surat]
+
+Yang bertanda tangan di bawah ini, Lurah [NAMA_INSTANSI] menerangkan bahwa:
+
+Nama          : [nama_lengkap]
+NIK           : [nik]
+Alamat        : [alamat]
+
+Adalah warga Kelurahan [NAMA_INSTANSI] yang berperilaku baik dan tidak pernah terlibat tindak pidana.
+
+Surat pengantar ini dibuat untuk mengajukan SKCK kepada Kepolisian.
+
+                                            [NAMA_INSTANSI], [tanggal_surat]
+
+                                            Lurah [NAMA_INSTANSI]
+
+                                            [NAMA_LURAH]
+                                            NIP. [NIP_LURAH]` }))}
+                  color="success"
+                  variant="outlined"
+                  clickable
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <Chip
+                  label="Surat Keterangan Usaha"
+                  onClick={() => setEditing(p => ({ ...p, template_surat: `SURAT KETERANGAN USAHA
+
+Nomor      : [nomor_surat]
+
+Yang bertanda tangan di bawah ini, Lurah [NAMA_INSTANSI] dengan ini menerangkan bahwa:
+
+Nama          : [nama_lengkap]
+NIK           : [nik]
+Alamat        : [alamat]
+
+Adalah benar warga Kelurahan [NAMA_INSTANSI] yang memiliki usaha:
+Jenis Usaha   : [jenis_usaha]
+Alamat Usaha  : [alamat_usaha]
+
+Surat ini dibuat untuk keperluan: [keperluan]
+
+                                            [NAMA_INSTANSI], [tanggal_surat]
+
+                                            Lurah [NAMA_INSTANSI]
+
+                                            [NAMA_LURAH]
+                                            NIP. [NIP_LURAH]` }))}
+                  color="warning"
+                  variant="outlined"
+                  clickable
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                <Chip
+                  label="Surat Keterangan Kelahiran"
+                  onClick={() => setEditing(p => ({ ...p, template_surat: `SURAT KETERANGAN KELAHIRAN
+
+Yang bertanda tangan di bawah ini, Lurah [NAMA_INSTANSI] menerangkan bahwa pada:
+
+Hari          :
+Tanggal       :
+Pukul         :
+Tempat        :
+
+Telah lahir seorang anak dengan keterangan:
+Nama Bayi     : [nama_bayi]
+Jenis Kelamin :
+Ayah          : [nama_lengkap]
+NIK Ayah      : [nik]
+Ibu           : [nama_ibu]
+NIK Ibu       : [nik_ibu]
+Alamat        : [alamat]
+
+Demikian surat ini dibuat untuk dipergunakan sebagaimana mestinya.
+
+                                            [NAMA_INSTANSI], [tanggal_surat]
+
+                                            Lurah [NAMA_INSTANSI]
+
+                                            [NAMA_LURAH]
+                                            NIP. [NIP_LURAH]` }))}
+                  color="error"
+                  variant="outlined"
+                  clickable
+                />
+              </Grid>
+            </Grid>
+
+            {/* Template Editor */}
+            <Card variant="outlined" sx={{ borderRadius: 2, mb: 3 }}>
+              <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 1.5, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Description />
+                  <Typography variant="subtitle2" fontWeight={700}>
+                    Editor Template Surat
+                  </Typography>
+                </Box>
+              </Box>
+              <Box sx={{ p: 2 }}>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={15}
+                  margin="normal"
+                  value={editing.template_surat || ''}
+                  onChange={e => setEditing(p => ({ ...p, template_surat: e.target.value }))}
+                  placeholder={`Ketik template surat di sini...
+Gunakan placeholder dalam format [nama_placeholder]
+Contoh: [nama_lengkap], [nik], [alamat]`}
+                  InputProps={{
+                    sx: { fontFamily: 'monospace', fontSize: '0.9rem' }
+                  }}
+                />
+              </Box>
+            </Card>
+
+            {/* Placeholder Reference */}
+            <Card variant="outlined" sx={{ borderRadius: 2, mb: 3 }}>
+              <Box sx={{ bgcolor: 'grey.100', p: 1.5, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                <Typography variant="subtitle2" fontWeight={700}>
+                  Daftar Placeholder yang Tersedia
+                </Typography>
+              </Box>
+              <Box sx={{ p: 2 }}>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <Typography variant="caption" fontWeight={700} color="primary" display="block" gutterBottom>
+                      Data Identitas Pemohon:
+                    </Typography>
+                    <List dense disablePadding>
+                      {['[nama_lengkap] - Nama lengkap', '[nik] - NIK', '[alamat] - Alamat lengkap', '[nomor_hp] - Nomor HP/WA', '[email] - Email'].map((p, i) => (
+                        <ListItem key={i} disablePadding sx={{ py: 0.25 }}>
+                          <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="success" /></ListItemIcon>
+                          <ListItemText primary={<Typography variant="caption" fontFamily="monospace">{p}</Typography>} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <Typography variant="caption" fontWeight={700} color="secondary" display="block" gutterBottom>
+                      Data Instansi:
+                    </Typography>
+                    <List dense disablePadding>
+                      {['[NAMA_INSTANSI] - Nama Kelurahan', '[KECAMATAN] - Nama Kecamatan', '[KOTA] - Nama Kota', '[NAMA_LURAH] - Nama Lurah', '[NIP_LURAH] - NIP Lurah'].map((p, i) => (
+                        <ListItem key={i} disablePadding sx={{ py: 0.25 }}>
+                          <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="secondary" /></ListItemIcon>
+                          <ListItemText primary={<Typography variant="caption" fontFamily="monospace">{p}</Typography>} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <Typography variant="caption" fontWeight={700} color="warning.dark" display="block" gutterBottom>
+                      Data Surat:
+                    </Typography>
+                    <List dense disablePadding>
+                      {['[nomor_surat] - Nomor surat otomatis', '[tanggal_surat] - Tanggal surat', '[keperluan] - Keperluan (jika ada)', '[jenis_usaha] - Jenis usaha (jika ada)'].map((p, i) => (
+                        <ListItem key={i} disablePadding sx={{ py: 0.25 }}>
+                          <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                          <ListItemText primary={<Typography variant="caption" fontFamily="monospace">{p}</Typography>} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Grid>
+                </Grid>
+
+                {/* Custom Fields */}
+                {fields.length > 0 && (
+                  <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                    <Typography variant="caption" fontWeight={700} color="info.main" display="block" gutterBottom>
+                      Field Kustom dari Layanan Ini:
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {fields.map((f, i) => (
+                        <Chip
+                          key={i}
+                          label={`[${f.name}]`}
+                          size="small"
+                          variant="outlined"
+                          color="info"
+                          onClick={() => {
+                            const template = editing.template_surat || '';
+                            setEditing(p => ({ ...p, template_surat: template + `[${f.name}]` }));
+                          }}
+                          sx={{ fontFamily: 'monospace', fontSize: '0.7rem' }}
+                        />
+                      ))}
+                    </Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                      * Klik chip untuk menambahkan ke template
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Card>
+
+            {/* Preview */}
+            {(editing.template_surat || '').length > 0 && (
+              <Card sx={{ borderRadius: 2, border: 2, borderColor: 'primary.light' }}>
+                <Box sx={{ bgcolor: 'primary.light', color: 'white', p: 1.5, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                  <Typography variant="subtitle2" fontWeight={700}>
+                    Preview Template (dengan data contoh)
+                  </Typography>
+                </Box>
+                <Box sx={{ p: 3, bgcolor: 'grey.50', borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
+                  <Paper sx={{ p: 3, boxShadow: 3, minHeight: 200 }}>
+                    <Typography
+                      variant="body2"
+                      component="pre"
+                      sx={{
+                        whiteSpace: 'pre-wrap',
+                        fontFamily: 'monospace',
+                        fontSize: '0.85rem',
+                        lineHeight: 1.6,
+                        m: 0
+                      }}
+                    >
+                      {(editing.template_surat || '')
+                        .replace('[nama_lengkap]', 'AHMAD SUDRAJAT')
+                        .replace('[nik]', '3201234567890001')
+                        .replace('[alamat]', 'Jl. Merdeka No. 123, RT 01/RW 02')
+                        .replace('[nomor_hp]', '08123456789')
+                        .replace('[email]', 'ahmad@email.com')
+                        .replace('[NAMA_INSTANSI]', 'Kelurahan Sukamaju')
+                        .replace('[KECAMATAN]', 'Kecamatan Cimahi Tengah')
+                        .replace('[KOTA]', 'Kota Cimahi')
+                        .replace('[NAMA_LURAH]', 'Drs. H. SUGENG')
+                        .replace('[NIP_LURAH]', '196501011990031001')
+                        .replace('[nomor_surat]', '001/KEL-SKM/VI/2026')
+                        .replace('[tanggal_surat]', new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }))}
+                    </Typography>
+                  </Paper>
+                </Box>
+              </Card>
+            )}
           </TabPanel>
         </DialogContent>
         <DialogActions>
