@@ -6,12 +6,12 @@ import {
   Stepper, Step, StepLabel, Paper, Alert, CircularProgress,
   List, ListItem, ListItemIcon, ListItemText, Divider, IconButton,
   Chip, Badge, Accordion, AccordionSummary,
-  AccordionDetails, Avatar
+  AccordionDetails, Avatar, InputAdornment
 } from '@mui/material';
 import {
   CloudUpload, CheckCircle,
   ArrowForward, Close, FilePresent, PictureAsPdf, ArrowBack,
-  ExpandMore, Warning, Info, Description, Assignment
+  ExpandMore, Warning, Info, Description, Assignment, WhatsApp
 } from '@mui/icons-material';
 import { supabase, generateNomorRegistrasi } from '../lib/supabase';
 import type { LayananMaster, FieldConfig } from '../lib/supabase';
@@ -368,6 +368,36 @@ export default function LayananPage() {
           </Box>
           <Divider sx={{ mb: 2 }} />
 
+          {/* Important Notice */}
+          <Alert severity="warning" sx={{ mb: 3, borderRadius: 2 }} icon={<Warning />}>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              PENTING - BACA SEBELUM MENGAJUKAN:
+            </Typography>
+            <List dense disablePadding>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText
+                  primary="Dokumen asli HARUS dibawa ke kantor kelurahan saat pengambilan surat"
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText
+                  primary="Staf kelurahan akan menghubungi Anda via WhatsApp jika dokumen kurang/tidak lengkap"
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText
+                  primary="Pastikan nomor WhatsApp aktif dan bisa dihubungi"
+                  primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                />
+              </ListItem>
+            </List>
+          </Alert>
+
           <Typography variant="subtitle2" gutterBottom color="primary">Data Identitas</Typography>
           <TextField fullWidth margin="normal" label="Nama Lengkap *" value={formData.nama_lengkap || ''}
             onChange={e => handleFormChange('nama_lengkap', e.target.value)} required />
@@ -375,8 +405,35 @@ export default function LayananPage() {
             onChange={e => handleFormChange('nik', e.target.value)} required />
           <TextField fullWidth margin="normal" label="Alamat Lengkap *" multiline rows={2}
             value={formData.alamat || ''} onChange={e => handleFormChange('alamat', e.target.value)} required />
-          <TextField fullWidth margin="normal" label="Nomor HP *" value={formData.nomor_hp || ''}
-            onChange={e => handleFormChange('nomor_hp', e.target.value)} required />
+
+          {/* WhatsApp Field - Prominent */}
+          <Card sx={{ mt: 2, mb: 2, border: 2, borderColor: 'success.main', bgcolor: 'success.50' }}>
+            <CardContent sx={{ py: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <WhatsApp color="success" sx={{ fontSize: 28 }} />
+                <Typography variant="subtitle1" fontWeight={700} color="success.main">
+                  Nomor WhatsApp (WAJIB)
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                label="Nomor WhatsApp *"
+                placeholder="Contoh: 08123456789"
+                value={formData.nomor_hp || ''}
+                onChange={e => handleFormChange('nomor_hp', e.target.value)}
+                required
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <WhatsApp color="success" />
+                    </InputAdornment>
+                  ),
+                }}
+                helperText="Staf kelurahan akan menghubungi via WhatsApp jika ada kekurangan dokumen atau persyaratan tidak sesuai"
+              />
+            </CardContent>
+          </Card>
+
           <TextField fullWidth margin="normal" label="Email" type="email" value={formData.email || ''}
             onChange={e => handleFormChange('email', e.target.value)} />
 
@@ -410,11 +467,64 @@ export default function LayananPage() {
             Upload dokumen persyaratan yang diperlukan untuk {selectedLayanan.nama_layanan}
           </Typography>
 
+          {/* Document Notice */}
+          <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }} icon={<Warning />}>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              PERHATIAN - DOKUMEN ASLI WAJIB DIBAWA KE KELURAHAN!
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Dokumen yang diupload hanya sebagai lampiran verifikasi awal. Anda WAJIB membawa dokumen asli ke kantor kelurahan saat:
+            </Typography>
+            <List dense disablePadding>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="error" /></ListItemIcon>
+                <ListItemText primary="Pengambilan surat yang sudah jadi" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="error" /></ListItemIcon>
+                <ListItemText primary="Verifikasi kelengkapan dokumen" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+            </List>
+          </Alert>
+
+          {/* WhatsApp Contact Notice */}
+          <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }} icon={<WhatsApp />}>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              HUBUNGIAN VIA WHATSAPP
+            </Typography>
+            <Typography variant="body2">
+              Staf kelurahan akan menghubungi Anda via WhatsApp jika:
+            </Typography>
+            <List dense disablePadding>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="info" /></ListItemIcon>
+                <ListItemText primary="Dokumen yang diupload kurang atau tidak lengkap" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="info" /></ListItemIcon>
+                <ListItemText primary="Foto/scan dokumen tidak jelas atau tidak sesuai" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="info" /></ListItemIcon>
+                <ListItemText primary="Diperlukan dokumen tambahan" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+            </List>
+          </Alert>
+
           <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle2">Persyaratan yang diperlukan:</Typography>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              Persyaratan yang diperlukan ({selectedLayanan.syarat?.length || 0} item):
+            </Typography>
             <List dense>
               {selectedLayanan.syarat?.map((s, i) => (
-                <ListItem key={i}><ListItemIcon sx={{ minWidth: 32 }}><CheckCircle fontSize="small" color="success" /></ListItemIcon><ListItemText primary={s} /></ListItem>
+                <ListItem key={i}>
+                  <ListItemIcon sx={{ minWidth: 32 }}>
+                    <Avatar sx={{ width: 24, height: 24, bgcolor: 'primary.main', fontSize: '0.75rem' }}>
+                      {i + 1}
+                    </Avatar>
+                  </ListItemIcon>
+                  <ListItemText primary={s} primaryTypographyProps={{ fontWeight: 500 }} />
+                </ListItem>
               ))}
             </List>
           </Box>
@@ -559,8 +669,30 @@ export default function LayananPage() {
           <Typography variant="h4" fontWeight={700} color="primary" sx={{ mb: 3, p: 2, bgcolor: 'primary.light', borderRadius: 2, color: 'white' }}>
             {nomorRegistrasi}
           </Typography>
+
+          {/* Important reminders */}
+          <Alert severity="warning" sx={{ mb: 2, textAlign: 'left', borderRadius: 2 }} icon={<Warning />}>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              PENTING - LANGKAH SELANJUTNYA:
+            </Typography>
+            <List dense disablePadding>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText primary="Simpan nomor registrasi ini untuk tracking status" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText primary="DOKUMEN ASLI WAJIB dibawa ke kelurahan saat pengambilan" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><WhatsApp fontSize="small" color="success" /></ListItemIcon>
+                <ListItemText primary="Staf akan menghubungi via WhatsApp jika ada kekurangan" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+            </List>
+          </Alert>
+
           <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Simpan nomor registrasi ini untuk melacak status pengajuan Anda di halaman Tracking.
+            Pantau status pengajuan Anda di halaman Tracking dan tunggu konfirmasi dari staf kelurahan.
           </Typography>
           <Button variant="contained" onClick={() => {
             setActiveStep(0);
@@ -587,14 +719,21 @@ export default function LayananPage() {
           </Box>
         </DialogTitle>
         <DialogContent>
-          {/* Persyaratan Alert Box */}
-          <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }} icon={<Warning />}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              PENTING: Pastikan semua persyaratan terpenuhi sebelum mengajukan!
+          {/* Important Notice */}
+          <Alert severity="warning" sx={{ mb: 3, borderRadius: 2 }} icon={<Warning />}>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              INFORMASI PENTING:
             </Typography>
-            <Typography variant="body2">
-              Pengajuan yang tidak lengkap akan ditolak dan harus diajukan ulang.
-            </Typography>
+            <List dense disablePadding>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="warning" /></ListItemIcon>
+                <ListItemText primary="Dokumen asli WAJIB dibawa ke kantor kelurahan" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+              <ListItem disablePadding sx={{ py: 0.25 }}>
+                <ListItemIcon sx={{ minWidth: 24 }}><WhatsApp fontSize="small" color="success" /></ListItemIcon>
+                <ListItemText primary="Staf akan menghubungi via WhatsApp jika dokumen tidak lengkap" primaryTypographyProps={{ variant: 'body2' }} />
+              </ListItem>
+            </List>
           </Alert>
 
           {/* Persyaratan Card */}
@@ -603,7 +742,7 @@ export default function LayananPage() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Description />
                 <Typography variant="subtitle1" fontWeight={700}>
-                  Persyaratan Lengkap
+                  Dokumen Persyaratan yang Harus Disiapkan
                 </Typography>
                 <Chip
                   label={`${detailLayanan?.syarat?.length || 0} item`}
@@ -638,6 +777,11 @@ export default function LayananPage() {
                   Tidak ada persyaratan khusus
                 </Typography>
               )}
+            </Box>
+            <Box sx={{ bgcolor: 'error.light', p: 2, borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
+              <Typography variant="caption" fontWeight={700} color="error.dark">
+                CATATAN: Dokumen asli wajib dibawa saat datang ke kelurahan untuk verifikasi dan pengambilan surat!
+              </Typography>
             </Box>
           </Card>
 

@@ -4,10 +4,12 @@ import {
   TableHead, TableRow, Button, IconButton, Dialog, DialogTitle,
   DialogContent, DialogActions, TextField, Chip, Switch, FormControlLabel,
   Tooltip, Alert, Snackbar, Tabs, Tab, List, ListItem,
-  ListItemText, IconButton as MuiIconButton, Grid, AppBar, Toolbar
+  ListItemText, ListItemIcon, IconButton as MuiIconButton, Grid, AppBar, Toolbar,
+  Card, CardContent, Avatar
 } from '@mui/material';
 import {
-  Add, Edit, Delete, Save, Cancel, ArrowBack
+  Add, Edit, Delete, Save, Cancel, ArrowBack, Warning, CheckCircle,
+  Description, WhatsApp, Info
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -242,22 +244,151 @@ export default function AdminLayananPage() {
           </TabPanel>
 
           <TabPanel value={tabIndex} index={1}>
+            {/* Persyaratan Info */}
+            <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }} icon={<Info />}>
+              <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+                Tentang Persyaratan Dokumen:
+              </Typography>
+              <List dense disablePadding>
+                <ListItem disablePadding sx={{ py: 0.25 }}>
+                  <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="info" /></ListItemIcon>
+                  <ListItemText
+                    primary="Daftar semua dokumen yang HARUS dibawa warga ke kelurahan"
+                    primaryTypographyProps={{ variant: 'body2' }}
+                  />
+                </ListItem>
+                <ListItem disablePadding sx={{ py: 0.25 }}>
+                  <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="info" /></ListItemIcon>
+                  <ListItemText
+                    primary="Warga akan dihubungi via WhatsApp jika dokumen kurang/tidak lengkap"
+                    primaryTypographyProps={{ variant: 'body2' }}
+                  />
+                </ListItem>
+                <ListItem disablePadding sx={{ py: 0.25 }}>
+                  <ListItemIcon sx={{ minWidth: 24 }}><WhatsApp fontSize="small" color="success" /></ListItemIcon>
+                  <ListItemText
+                    primary="Nomor WhatsApp warga WAJIB diisi untuk komunikasi"
+                    primaryTypographyProps={{ variant: 'body2' }}
+                  />
+                </ListItem>
+              </List>
+            </Alert>
+
+            {/* Standard Requirements */}
+            <Card variant="outlined" sx={{ mb: 3, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: 'warning.light', p: 2, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                <Typography variant="subtitle2" fontWeight={700} color="warning.dark">
+                  Dokumen Standar (Otomatis Diperlukan):
+                </Typography>
+              </Box>
+              <Box sx={{ p: 2 }}>
+                <Grid container spacing={1}>
+                  {['KTP (Kartu Tanda Penduduk)', 'KK (Kartu Keluarga)', 'Surat Pengantar RT/RW (jika diperlukan)'].map((doc, i) => (
+                    <Grid size={{ xs: 12, sm: 4 }} key={i}>
+                      <Chip
+                        icon={<CheckCircle />}
+                        label={doc}
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                  * Dokumen di atas otomatis muncul sebagai pengingat warga. Tambahkan persyaratan khusus di bawah.
+                </Typography>
+              </Box>
+            </Card>
+
+            {/* Custom Requirements */}
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>
+              Persyaratan Khusus Layanan Ini:
+            </Typography>
             <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-              <TextField fullWidth label="Tambah Persyaratan"
-                value={newSyarat} onChange={e => setNewSyarat(e.target.value)}
+              <TextField
+                fullWidth
+                label="Tambah Persyaratan Dokumen"
+                placeholder="Contoh: Surat keterangan tidak mampu dari Lurah"
+                value={newSyarat}
+                onChange={e => setNewSyarat(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && addSyarat()}
               />
               <Button variant="contained" onClick={addSyarat} startIcon={<Add />}>Tambah</Button>
             </Box>
-            <List>
-              {(editing.syarat || []).map((s, i) => (
-                <ListItem key={i} secondaryAction={
-                  <MuiIconButton edge="end" onClick={() => removeSyarat(i)}><Delete fontSize="small" /></MuiIconButton>
-                }>
-                  <ListItemText primary={`${i + 1}. ${s}`} />
-                </ListItem>
-              ))}
-            </List>
+
+            {(editing.syarat || []).length > 0 ? (
+              <Card variant="outlined" sx={{ borderRadius: 2 }}>
+                <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 1.5, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Description fontSize="small" />
+                    <Typography variant="subtitle2" fontWeight={700}>
+                      Daftar Persyaratan ({(editing.syarat || []).length} item)
+                    </Typography>
+                  </Box>
+                </Box>
+                <List sx={{ p: 0 }}>
+                  {(editing.syarat || []).map((s, i) => (
+                    <ListItem
+                      key={i}
+                      sx={{
+                        bgcolor: i % 2 === 0 ? 'grey.50' : 'transparent',
+                        borderBottom: i === (editing.syarat || []).length - 1 ? 0 : 1,
+                        borderBottomColor: 'divider'
+                      }}
+                      secondaryAction={
+                        <MuiIconButton edge="end" onClick={() => removeSyarat(i)} color="error">
+                          <Delete fontSize="small" />
+                        </MuiIconButton>
+                      }
+                    >
+                      <ListItemIcon sx={{ minWidth: 36 }}>
+                        <Avatar sx={{ width: 24, height: 24, bgcolor: 'primary.main', fontSize: '0.75rem' }}>
+                          {i + 1}
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={s}
+                        primaryTypographyProps={{ fontWeight: 500 }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Card>
+            ) : (
+              <Alert severity="warning" sx={{ borderRadius: 2 }} icon={<Warning />}>
+                Belum ada persyaratan khusus. Tambahkan dokumen yang diperlukan untuk layanan ini.
+              </Alert>
+            )}
+
+            {/* Notice about WhatsApp */}
+            <Card sx={{ mt: 3, bgcolor: 'success.50', border: 1, borderColor: 'success.main' }}>
+              <CardContent sx={{ py: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <WhatsApp color="success" />
+                  <Typography variant="subtitle2" fontWeight={700} color="success.main">
+                    WhatsApp Contact Notice
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Sistem otomatis menampilkan pemberitahuan bahwa staf kelurahan akan menghubungi warga via WhatsApp jika:
+                </Typography>
+                <List dense disablePadding sx={{ mt: 1 }}>
+                  <ListItem disablePadding sx={{ py: 0.25 }}>
+                    <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="success" /></ListItemIcon>
+                    <ListItemText primary="Dokumen yang diupload kurang atau tidak lengkap" primaryTypographyProps={{ variant: 'body2' }} />
+                  </ListItem>
+                  <ListItem disablePadding sx={{ py: 0.25 }}>
+                    <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="success" /></ListItemIcon>
+                    <ListItemText primary="Foto/scan dokumen tidak jelas atau tidak sesuai" primaryTypographyProps={{ variant: 'body2' }} />
+                  </ListItem>
+                  <ListItem disablePadding sx={{ py: 0.25 }}>
+                    <ListItemIcon sx={{ minWidth: 24 }}><CheckCircle fontSize="small" color="success" /></ListItemIcon>
+                    <ListItemText primary="Diperlukan dokumen tambahan" primaryTypographyProps={{ variant: 'body2' }} />
+                  </ListItem>
+                </List>
+              </CardContent>
+            </Card>
           </TabPanel>
 
           <TabPanel value={tabIndex} index={2}>
